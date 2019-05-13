@@ -47,21 +47,14 @@
                 $(child).html(backup.html());
 
                 /* If multiple parents build classname like foo\bar. */
-                var selected = "";
+                var selected = [];
                 $(parent_selector).each(function() {
-                    var selectedClass = $("option:selected", this).val();
-                    if (selectedClass) {
-                        if (selected.length > 0) {
-                            if (window.Zepto) {
-                                /* Zepto class regexp dies with classes like foo\bar. */
-                                selected += "\\\\";
-                            } else {
-                                selected += "\\";
-                            }
-                        }
-                        selected += selectedClass;
-                    }
+                    $(":selected", this).each(function() {
+                        selected.push($(this).val());
+                    });
                 });
+
+
 
                 /* Also check for first parent without subclassing. */
                 /* TODO: This should be dynamic and check for each parent */
@@ -75,11 +68,16 @@
                 var selected_first = $("option:selected", first).val();
 
                 $("option", child).each(function() {
-                    /* Remove unneeded items but save the default value. */
-                    if ($(this).hasClass(selected) && $(this).val() === currently_selected_value) {
-                        $(this).prop("selected", true);
-                        trigger_change = false;
-                    } else if (!$(this).hasClass(selected) && !$(this).hasClass(selected_first) && $(this).val() !== "") {
+                    var hasSelectedClass = false;
+                    var classList = ($(this).attr('class') == undefined || "" ) ? [] : $(this).attr('class').split(/\s+/);
+                    $.each( classList, function(index, item){
+                        if (jQuery.inArray(item, selected) >= 0) {
+                            hasSelectedClass = true;
+                            return;
+                        }
+                    });
+                    if (!hasSelectedClass &&
+                        !$(this).hasClass(selected_first) && $(this).val() !== "") {
                         $(this).remove();
                     }
                 });
