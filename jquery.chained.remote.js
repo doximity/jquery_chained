@@ -17,7 +17,6 @@
     "use strict";
 
     $.fn.remoteChained = function(options) {
-
         var settings = $.extend({}, $.fn.remoteChained.defaults, options);
 
         /* Loading text always clears the select. */
@@ -38,7 +37,13 @@
                     var data = {};
                     $(settings.parents).each(function() {
                         var id = $(this).attr(settings.attribute);
-                        var value = ($(this).is("select") ? $(":selected", this) : $(this)).val();
+                        var value = []
+
+
+                        $(":selected", this).each(function() {
+                            value.push($(this).val());
+                        });
+
                         data[id] = value;
 
                         /* Optionally also depend on values from these inputs. */
