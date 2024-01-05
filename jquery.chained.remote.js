@@ -39,10 +39,13 @@
                         var id = $(this).attr(settings.attribute);
                         var value = []
 
-
-                        $(":selected", this).each(function() {
+                        if($(this).is("select")) {
+                            $(":selected", this).each(function() {
+                                value.push($(this).val());
+                            });
+                        } else {
                             value.push($(this).val());
-                        });
+                        }
 
                         data[id] = value;
 
